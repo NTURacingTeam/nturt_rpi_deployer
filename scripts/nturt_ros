@@ -1,0 +1,60 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          nturt ros on docker 
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: starts nturt ros on docker
+# Description:       starts nturt ros on docker, this script assumes that you already created a
+#                    container named "ros" container using NRURacingTeam/docker repository and
+#                    put the launch file for roslaunch in /ws/src of the container path
+### END INIT INFO
+
+# /etc/init.d/nturt_ros
+
+start() {
+    echo -n "Starting nturt ros on docker: "
+    echo "--------------------------------------------------" >> /var/log/nturt_ros
+    date +"! %Y/%m/%d %a %T : Launching ros on docker" >>/var/log/nturt_ros
+    if [[ -n $(docker container list -a | sed -n '2,$p' | awk '{print $NF}' | grep -w ros) ]]; then
+        docker start ros
+    fi
+    docker exec -d ros bash -c "source /opt/ros/noetic/setup.bash
+                                source /home/docker/ws/devel/setup.bash
+                                python3 \$(rospack find nturt_deploy_to_rpi)/scripts/nturt_ros_launch.py"
+    date +"! %Y/%m/%d %a %T : Finished launching ros on docker." >>/var/log/nturt_ros
+    echo "--------------------------------------------------" >> /var/log/nturt_ros
+    echo "Done"
+    touch /var/lock/subsys/nturt_ros
+}
+
+stop() {
+    echo -n "Shuting down nturt ros on docker: "
+    echo "--------------------------------------------------" >> /var/log/nturt_ros
+    date +"! %Y/%m/%d %a %T : Shuting down ros on docker" >>/var/log/nturt_ros
+    ROS_MASTER_PID=$(pgrep rosmaster)
+    docker exec -d ros pkill -f nturt_ros_launch.py
+    wait ${ROS_MASTER_PID}
+    date +"! %Y/%m/%d %a %T : Finished shuting down ros on docker." >>/var/log/nturt_ros
+    echo "--------------------------------------------------" >> /var/log/nturt_ros
+    echo "Done"
+    rm /var/lock/subsys/nturt_ros
+}
+
+case "$1" in
+    start)
+        start
+    ;;
+    stop)
+        stop
+    ;;
+    restart)
+        stop
+        start
+    ;;
+    *)
+        echo "Usage: nturt_ros { start | stop | restart }"
+        exit 1
+    ;;
+esac
+exit 0
