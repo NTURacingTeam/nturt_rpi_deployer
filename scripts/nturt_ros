@@ -20,7 +20,7 @@ start() {
         docker start ros
     fi
     docker exec -d ros bash -c "source /opt/ros/noetic/setup.bash
-                                source /home/docker/ws/devel/setup.bash
+                                source \${HOME}/ws/devel/setup.bash
                                 python3 \$(rospack find nturt_deploy_to_rpi)/scripts/nturt_ros_launch.py"
     date +"! %Y/%m/%d %a %T : Finished launching ros on docker." >>/var/log/nturt_ros
     echo "--------------------------------------------------" >> /var/log/nturt_ros
