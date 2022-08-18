@@ -22,7 +22,15 @@ add_executable(can_test
         test/can_test.cpp
 )
 
+add_executable(stm32_test
+        test/stm32_test.cpp
+)
+
 target_link_libraries(can_test
+        ${catkin_LIBRARIES}
+)
+
+target_link_libraries(stm32_test
         ${catkin_LIBRARIES}
 )
 

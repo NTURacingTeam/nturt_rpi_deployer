@@ -3,5 +3,5 @@
     <node pkg="socketcan_bridge" name="sockercan_bridge" type="socketcan_bridge_node"/>
     <node pkg="nturt_state_controller" name="nturt_state_controller" type="nturt_state_controller_node"/>
     <node pkg="nturt_torque_cmd" name="nturt_torque_cmd" type="nturt_torque_cmd"/>
-    <node pkg="nturt_deploy_to_rpi" name="nturt_deploy_to_rpi" type="ros_test.py"/>
+    <node pkg="nturt_deploy_to_rpi" name="nturt_deploy_to_rpi_ros_test" type="ros_test.py"/>
 </launch>
