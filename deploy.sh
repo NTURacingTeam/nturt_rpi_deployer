@@ -18,17 +18,17 @@ if [[ ! -a /usr/local/include/bcm2835.h ]]; then
 fi
 
 # if wiringpi is not installed
-dkpg -s wiringpi &>/dev/null
+dpkg -s wiringpi &>/dev/null
 if [[ ! $? == 0 ]]; then
     echo "Wiringpi is not installed, installing..."
     sudo apt-get install wiringpi
 fi
 
 # if /boot/config.txt is not yet configured
-if [[ -z $(cat /boot/config.txt | grep -m "can0") ]]; then
+if [[ -z $(cat /boot/config.txt | grep -w "can0") ]]; then
     echo "Boot config is not yet configured for can hat, please reboot to make it into effect"
-    sudo echo "dtparam=spi=on" >> /boot/config.txt
-    sudo echo "dtoverlay=mcp2515-can0,oscillator=12000000,interrupt=25,spimaxfrequency=2000000" >> /boot/config.txt
+    echo "dtparam=spi=on" | sudo tee -a /boot/config.txt
+    echo "dtoverlay=mcp2515-can0,oscillator=12000000,interrupt=25,spimaxfrequency=2000000" | sudo tee -a /boot/config.txt
 fi
 
 # if docker is not installed
