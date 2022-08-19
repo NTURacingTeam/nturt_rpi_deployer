@@ -36,7 +36,7 @@ fi
 
 # check if docker container exists
 if [[ -z "$(docker ps -a | grep -w ros)" ]]; then
-    PWD=$(PWD)
+    PWD=$(pwd)
     echo "Docker container for ros does not exist, creating"
     # cloning docker environment for using ros on rpi
     cd
@@ -46,7 +46,6 @@ if [[ -z "$(docker ps -a | grep -w ros)" ]]; then
     echo "Creating a container named 'ros'"
     ./start_container.sh create ros ros_rpi
 
-    # create a docker directory to put this package in
-    mkdir -p ~/docker/packages/ros
-    cd .. && sudo cp -r ${PWD} ~/docker/packages/ros/
+    # copy this package to docker package directory
+    cd .. && sudo cp ${PWD} ~/docker/packages/ros/
 fi
