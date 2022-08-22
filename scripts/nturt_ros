@@ -12,6 +12,8 @@
 
 # /etc/init.d/nturt_ros
 
+NTURT_ROS_DIRECTORY="/"
+
 start() {
     echo -n "Starting nturt ros on docker: "
     echo "--------------------------------------------------" >> /var/log/nturt_ros
@@ -31,6 +33,8 @@ start() {
                                 source \${HOME}/ws/devel/setup.bash
                                 roslaunch nturt_deploy_to_rpi nturt_ros.launch"
     date +"! %Y/%m/%d %a %T : Finished launching ros on docker." >>/var/log/nturt_ros
+    # start executing loop for executing host command in docker container
+    nohup ${NTURT_ROS_DIRECTORY}/scripts/execute_loop.sh ${NTURT_ROS_DIRECTORY} &
     echo "--------------------------------------------------" >> /var/log/nturt_ros
     echo "Done"
     # create a lock file to prevent re-run of this file

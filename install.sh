@@ -6,6 +6,7 @@ if [[ ! $? == 0 ]]; then
     echo "Wiringpi is not installed, installing..."
     wget https://project-downloads.drogon.net/wiringpi-latest.deb
     sudo dpkg -i wiringpi-latest.deb
+    rm wiringpi-latest.deb
 fi
 
 # if bcm2835 is not installed
@@ -15,7 +16,7 @@ if [[ ! -a /usr/local/include/bcm2835.h ]]; then
     tar zxvf bcm2835-1.71.tar.gz
     cd bcm2835-1.71/
     sudo ./configure && sudo make && sudo make check && sudo make install
-    cd .. && rm -rf bcm2835-1.71/ && rm bcm2835-1.71.tar.gz
+    cd .. && sudo rm -rf bcm2835-1.71/ && rm bcm2835-1.71.tar.gz
 fi
 
 # if /boot/config.txt is not yet configured

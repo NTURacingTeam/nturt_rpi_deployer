@@ -3,10 +3,14 @@
 configure_startup() {
     # copy launch script for custom service "nturt_ros"
     sudo cp -f scripts/nturt_ros /etc/init.d/
+    # update systemctl daemon to make change into effect
+    sudo systemctl daemon-reload
     # register "nturt_ros" service to load at startup
     sudo update-rc.d nturt_ros defaults
-    # update systemctl daemon to make it into effect
-    sudo systemctl daemon-reload
+}
+
+get_pipe_line() {
+    echo $(cat $1 | grep PIPE_DIRECTORY= | cut -d= -f2)
 }
 
 # cehck for depnedencies
@@ -25,12 +29,22 @@ elif [[ -z "$(which docker)" ]]; then
     exit 1
 fi
 
-# check if start up script is modified or does not exit
+# check if named pipe exist
+if [[ ! -p "nturt_ros_pipe" ]]; then
+    echo "Named pipe for executing command on host in docker cintainer doesnot exit, adding..."
+    mkfifo nturt_ros_pipe
+fi
+
+# check if start up script is modified, does not exist or directory is changed
 if [[ ! -a /etc/init.d/nturt_ros ]]; then
     echo "Start up file does not exist, copying and configuring..."
     configure_startup
 elif [[ -n $(cmp /etc/init.d/nturt_ros scripts/nturt_ros) ]]; then
     echo "Start up file modified, copying and configuring..."
+    configure_startup
+elif [ "$(cat scripts/nturt_ros | grep NTURT_ROS_DIRECTORY= | cut -d= -f2)" != "$(pwd)" ]; then
+    echo "Directory of this package has been changed, updating..."
+    sed -i "/NTURT_ROS_DIRECTORY=/c\NTURT_ROS_DIRECTORY=\"$(pwd)\"" scripts/nturt_ros
     configure_startup
 fi
 

@@ -26,6 +26,10 @@ add_executable(stm32_test
         test/stm32_test.cpp
 )
 
+add_executable(cmd_test
+        test/cmd_test
+)
+
 target_link_libraries(can_test
         ${catkin_LIBRARIES}
 )
@@ -34,7 +38,6 @@ target_link_libraries(stm32_test
         ${catkin_LIBRARIES}
 )
 
-catkin_install_python(PROGRAMS
-        scripts/ros_test.py
-        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+target_link_libraries(cmd_test
+        ${catkin_LIBRARIES}
 )
