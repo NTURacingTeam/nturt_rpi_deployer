@@ -35,16 +35,18 @@ if [[ ! -p "nturt_ros_pipe" ]]; then
     mkfifo nturt_ros_pipe
 fi
 
+# check if the directory of the start up script is changed
+if [ "$(cat scripts/nturt_ros | grep NTURT_ROS_DIRECTORY= | cut -d= -f2)" != "\"$(pwd)\"" ]; then
+    echo "Directory of this package has been changed, updating..."
+    sed -i "/NTURT_ROS_DIRECTORY=/c\NTURT_ROS_DIRECTORY=\"$(pwd)\"" scripts/nturt_ros
+fi
+
 # check if start up script is modified, does not exist or directory is changed
 if [[ ! -a /etc/init.d/nturt_ros ]]; then
     echo "Start up file does not exist, copying and configuring..."
     configure_startup
 elif [[ -n $(cmp /etc/init.d/nturt_ros scripts/nturt_ros) ]]; then
     echo "Start up file modified, copying and configuring..."
-    configure_startup
-elif [ "$(cat scripts/nturt_ros | grep NTURT_ROS_DIRECTORY= | cut -d= -f2)" != "$(pwd)" ]; then
-    echo "Directory of this package has been changed, updating..."
-    sed -i "/NTURT_ROS_DIRECTORY=/c\NTURT_ROS_DIRECTORY=\"$(pwd)\"" scripts/nturt_ros
     configure_startup
 fi
 

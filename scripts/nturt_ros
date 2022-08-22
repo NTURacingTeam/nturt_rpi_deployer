@@ -34,7 +34,8 @@ start() {
                                 roslaunch nturt_deploy_to_rpi nturt_ros.launch"
     date +"! %Y/%m/%d %a %T : Finished launching ros on docker." >>/var/log/nturt_ros
     # start executing loop for executing host command in docker container
-    nohup ${NTURT_ROS_DIRECTORY}/scripts/execute_loop.sh ${NTURT_ROS_DIRECTORY} &
+    ${NTURT_ROS_DIRECTORY}/scripts/execute_loop.sh ${NTURT_ROS_DIRECTORY} &
+    disown -h %1
     echo "--------------------------------------------------" >> /var/log/nturt_ros
     echo "Done"
     # create a lock file to prevent re-run of this file
@@ -49,6 +50,8 @@ stop() {
     ROS_MASTER_PID=$(pgrep rosmaster)
     # kill "nturt_ros_launch.py" process, which will also shutdown ros
     docker exec -d ros pkill -f roslaunch
+    # kill executing loop
+    pkill -f "%${NTURT_ROS_DIRECTORY}/scripts/execute_loop.sh"
     # wait until rosmaster is shutdown
     wait ${ROS_MASTER_PID}
     date +"! %Y/%m/%d %a %T : Finished shuting down ros on docker." >>/var/log/nturt_ros
