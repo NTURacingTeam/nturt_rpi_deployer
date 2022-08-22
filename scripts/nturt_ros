@@ -23,16 +23,19 @@ start() {
         # run docker container wooht name "ros"
         docker start ros
     fi
+
     # configure can hat
     ip link set down can0
     ip link set can0 type can bitrate 250000 restart-ms 100
     # turn on can hat
     ifconfig can0 up
+
     # launch ros in docker
     docker exec -d ros bash -c "source /opt/ros/noetic/setup.bash
                                 source \${HOME}/ws/devel/setup.bash
                                 roslaunch nturt_deploy_to_rpi nturt_ros.launch"
     date +"! %Y/%m/%d %a %T : Finished launching ros on docker." >>/var/log/nturt_ros
+
     # start executing loop for executing host command in docker container
     ${NTURT_ROS_DIRECTORY}/scripts/execute_loop.sh ${NTURT_ROS_DIRECTORY} &
     disown -h %1
@@ -46,14 +49,18 @@ stop() {
     echo -n "Shuting down nturt ros on docker: "
     echo "--------------------------------------------------" >> /var/log/nturt_ros
     date +"! %Y/%m/%d %a %T : Shuting down ros on docker" >>/var/log/nturt_ros
+
+    # kill executing loop
+    EXECUTE_LOOP_PID=$(ps -ax | grep ${NTURT_ROS_DIRECTORY}/scripts/execute_loop.sh | awk '{print $1}' | head -1)
+    kill ${EXECUTE_LOOP_PID}
+
     # find the pid of rosmaster that's running in the docker container
     ROS_MASTER_PID=$(pgrep rosmaster)
     # kill "nturt_ros_launch.py" process, which will also shutdown ros
     docker exec -d ros pkill -f roslaunch
-    # kill executing loop
-    pkill -f "%${NTURT_ROS_DIRECTORY}/scripts/execute_loop.sh"
     # wait until rosmaster is shutdown
     wait ${ROS_MASTER_PID}
+
     date +"! %Y/%m/%d %a %T : Finished shuting down ros on docker." >>/var/log/nturt_ros
     echo "--------------------------------------------------" >> /var/log/nturt_ros
     echo "Done"
