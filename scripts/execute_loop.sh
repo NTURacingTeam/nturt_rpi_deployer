@@ -1,4 +1,8 @@
 while true; do
-    eval "$(cat $1/nturt_ros_pipe)"
-    sleep 1
+    COMMAND=$(cat $1/nturt_ros_pipe)
+    if [ ${COMMAND} == "stop" ];then
+        exit 0
+    else
+        eval ${COMMAND}
+    fi
 done

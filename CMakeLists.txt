@@ -41,3 +41,8 @@ target_link_libraries(stm32_test
 target_link_libraries(cmd_test
         ${catkin_LIBRARIES}
 )
+
+catkin_install_python(PROGRAMS
+        scripts/ros_test.py
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)

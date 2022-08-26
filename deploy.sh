@@ -9,10 +9,6 @@ configure_startup() {
     sudo update-rc.d nturt_ros defaults
 }
 
-get_pipe_line() {
-    echo $(cat $1 | grep PIPE_DIRECTORY= | cut -d= -f2)
-}
-
 # cehck for depnedencies
 # check wiringpi
 dpkg -s wiringpi &>/dev/null
@@ -38,6 +34,7 @@ fi
 # check if the directory of the start up script is changed
 if [ "$(cat scripts/nturt_ros | grep NTURT_ROS_DIRECTORY= | cut -d= -f2)" != "\"$(pwd)\"" ]; then
     echo "Directory of this package has been changed, updating..."
+    PWD=$(pwd)
     sed -i "/NTURT_ROS_DIRECTORY=/c\NTURT_ROS_DIRECTORY=\"$(pwd)\"" scripts/nturt_ros
 fi
 
@@ -63,5 +60,5 @@ if [[ -z "$(docker ps -a | grep -w ros)" ]]; then
     ./start_container.sh create ros ros_rpi
 
     # copy this package to docker package directory
-    cd .. && sudo cp ${PWD} ~/docker/packages/ros/
+    cd .. && sudo mv ${PWD}/nturt_deploy_to_rpi docker/packages/ros/
 fi
