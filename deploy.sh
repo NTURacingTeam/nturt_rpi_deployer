@@ -36,6 +36,7 @@ if [ "$(cat scripts/nturt_ros | grep NTURT_ROS_DIRECTORY= | cut -d= -f2)" != "\"
     echo "Directory of this package has been changed, updating..."
     PWD=$(pwd)
     sed -i "/NTURT_ROS_DIRECTORY=/c\NTURT_ROS_DIRECTORY=\"$(pwd)\"" scripts/nturt_ros
+    configure_startup
 fi
 
 # check if start up script is modified, does not exist or directory is changed
