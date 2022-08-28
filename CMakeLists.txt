@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(nturt_deploy_to_rpi)
+project(nturt_rpi_deployer)
 set(CMAKE_CXX_STANDARD 11)
 
 find_package(catkin REQUIRED
@@ -11,7 +11,8 @@ find_package(catkin REQUIRED
 
 catkin_package(
         INCLUDE_DIRS
-        LIBRARIES test
+        LIBRARIES
+        CATKIN_DEPENDS can_msgs roscpp rospy std_msgs
 )
 
 include_directories(

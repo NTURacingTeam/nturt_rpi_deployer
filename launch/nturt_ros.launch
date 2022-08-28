@@ -1,7 +1,16 @@
 <launch>
-    <include file="$(find nturt_bag_record)/launch/nturt_bag_record.launch"/>
+    <!-- node for sneding/receiving can signals using ros message -->
     <node pkg="socketcan_bridge" name="sockercan_bridge" type="socketcan_bridge_node"/>
+
+    <!-- node for recording ros message into a bag -->
+    <include file="$(find nturt_bag_recorder)/launch/nturt_bag_recorder.launch"/>
+
+    <!-- node for controlling the state of the car -->
     <node pkg="nturt_state_controller" name="nturt_state_controller" type="nturt_state_controller_node"/>
-    <node pkg="nturt_torque_cmd" name="nturt_torque_cmd" type="nturt_torque_cmd"/>
-    <node pkg="nturt_deploy_to_rpi" name="nturt_deploy_to_rpi_ros_test" type="ros_test.py"/>
+
+    <!-- node for controlling the can signal sent to the inverter -->
+    <node pkg="nturt_torque_controller" name="nturt_torque_controller" type="nturt_torque_controller_node"/>
+    
+    <!-- node for -->
+    <node pkg="nturt_rpi_deployer" name="nturt_rpi_deployer_test" type="ros_test.py"/>
 </launch>
