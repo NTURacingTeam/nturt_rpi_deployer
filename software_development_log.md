@@ -59,7 +59,7 @@ In order to execute host command in a docker container, a named pipe `nturt_ros_
 
 ---
 
-## Testing result of O.O:
+## Testing result of 1.0:
 
 ### Deploying to rpi
 
@@ -76,4 +76,4 @@ on a blank rpi, deployed successfully.
 
 ros launched successfully
 
-## Todos in O.O:
+## Todos in 1.0:
