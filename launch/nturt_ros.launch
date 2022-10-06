@@ -1,16 +1,19 @@
 <launch>
     <!-- node for sneding/receiving can signals using ros message -->
-    <node pkg="socketcan_bridge" name="sockercan_bridge" type="socketcan_bridge_node"/>
+    <node pkg="socketcan_bridge" name="sockercan_bridge" type="socketcan_bridge_node" output="screen"/>
 
     <!-- node for recording ros message into a bag -->
     <include file="$(find nturt_bag_recorder)/launch/nturt_bag_recorder.launch"/>
 
+    <!-- node for parsing can signal -->
+    <include file="$(find nturt_can_parser)/launch/nturt_can_parser.launch"/>
+
     <!-- node for controlling the state of the car -->
-    <node pkg="nturt_state_controller" name="nturt_state_controller" type="nturt_state_controller_node"/>
+    <node pkg="nturt_state_controller" name="nturt_state_controller" type="nturt_state_controller_node" output="screen"/>
 
     <!-- node for controlling the can signal sent to the inverter -->
-    <node pkg="nturt_torque_controller" name="nturt_torque_controller" type="nturt_torque_controller_node"/>
+    <node pkg="nturt_torque_controller" name="nturt_torque_controller" type="nturt_torque_controller_node" output="screen"/>
     
-    <!-- node for -->
-    <node pkg="nturt_rpi_deployer" name="nturt_rpi_deployer_test" type="ros_test.py"/>
+    <!-- node for test if ros is working -->
+    <node pkg="nturt_rpi_deployer" name="nturt_rpi_deployer_test" type="ros_test.py" output="screen"/>
 </launch>
