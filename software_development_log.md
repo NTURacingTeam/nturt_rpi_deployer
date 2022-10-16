@@ -4,7 +4,7 @@
 ##### Person in charge: 羅紀翔
 ##### Authors: 羅紀翔
 ##### Subsystem: RPI
-##### Subsystem number: RP1
+##### Subsystem number: RP2
 ##### Software name: rpi_deployer
 ##### Repository: [github](https://github.com/NTURacingTeam/nturt_rpi_deployer)
 ##### Started designing date: 8/17
@@ -41,6 +41,8 @@ In order to execute host command in a docker container, a named pipe `nturt_ros_
 
 - bash 5.0.17(1)-release (x86_64-pc-linux-gnu)
 - ros noetic
+- docker virtual environment from [NTURacingTeam/docker](https://github.com/NTURacingTeam/docker) with image `ros_matlab`, `ros_rpi` based on ubuntu20.04
+
 
 ##### Testing hardware:
 
@@ -49,8 +51,8 @@ In order to execute host command in a docker container, a named pipe `nturt_ros_
 
 ##### Operating system:
 
+- ubuntu 20.04
 - raspbian 32-bit
-- docker virtual environment from [NTURacingTeam/docker](https://github.com/NTURacingTeam/docker) with image `ros_matlab`, `ros_rpi` based on ubuntu20.04
 
 ##### Compiler(intepreter) version:
 

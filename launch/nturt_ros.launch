@@ -1,4 +1,7 @@
 <launch>
+    <!-- enviroment variable for determinin the cosole format -->
+    <env name="ROSCONSOLE_FORMAT" value="[${severity}] [${time}] [${node}]: ${message}"/>
+
     <!-- node for sneding/receiving can signals using ros message -->
     <node pkg="socketcan_bridge" name="sockercan_bridge" type="socketcan_bridge_node" output="screen"/>
 
