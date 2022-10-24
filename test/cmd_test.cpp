@@ -15,7 +15,9 @@ int main(int argc, char **argv) {
     ros::Duration(30).sleep();
 
     // kill ros
-    system("pkill -f roslaunch");
+    if(system("pkill -f roslaunch") != 0) {
+        ROS_FATAL("Fail to kill roslaunch.");
+    };
 
     return 0;
 }

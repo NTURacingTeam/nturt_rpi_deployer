@@ -20,7 +20,7 @@ start() {
     date +"! %Y/%m/%d %a %T : Launching ros on docker" >>/var/log/nturt_ros
     # if docker contianer is not running
     if [[ -n $(docker container list -a | sed -n '2,$p' | awk '{print $NF}' | grep -w ros) ]]; then
-        # run docker container wooht name "ros"
+        # run docker container with name "ros"
         docker start ros
     fi
 
