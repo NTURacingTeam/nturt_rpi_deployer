@@ -16,6 +16,12 @@
 
     <!-- node for controlling the can signal sent to the inverter -->
     <node pkg="nturt_torque_controller" name="nturt_torque_controller" type="nturt_torque_controller_node" output="screen"/>
+
+    <!-- node for recording gps signal -->
+    <node pkg="nturt_gps" name="nturt_gps_node" type="GPS.py" output="screen"/>
+
+    <!-- node for sneding messages to remote server -->
+    <node pkg="nturt_push_control_tower" name="push_to_control_tower_node" type="nturt_push_control_tower_node" />
     
     <!-- node for test if ros is working -->
     <node pkg="nturt_rpi_deployer" name="nturt_rpi_deployer_test" type="ros_test.py" output="screen"/>
