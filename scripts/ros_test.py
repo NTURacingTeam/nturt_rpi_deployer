@@ -15,7 +15,7 @@ def test():
 
     # initialize gpio
     GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(11, GPIO.OUT)
+    GPIO.setup(38, GPIO.OUT)
 
     # main loop
     while not rospy.is_shutdown():
@@ -26,11 +26,11 @@ def test():
 
         # blink led
         # turn on led
-        GPIO.output(11, True)
+        GPIO.output(38, True)
         rate.sleep()
 
         # turn off led
-        GPIO.output(11, False)
+        GPIO.output(38, False)
         rate.sleep()
     
     GPIO.cleanup()
