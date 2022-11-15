@@ -42,15 +42,34 @@ to revert the changes done when deploying.
 
 ### ROS setup
 
+#### nturt_ros.launch
+
 ROS will be launched at start up using launch file in `launch/nturt_ros.launch`, so custom it to fit your need.
 
-This ros package also provides testing python scripts `ros_test.py` in `scripts/ros_test.py` that blinks a led on gpio 11 which can be useful to find out weather the ros is launched. You can run it by
+#### nturt_led_controller_node
+
+This ros package provides `nturt_led_controller_node` that controlls the leds attaches to rpi to indicates:
+
+1. ROS, blinks on and off as long as this node is running
+2. CAN, blinks once when receiving a can message
+3. WARN, blinks once when a warnning message is publishes to `/rosout`
+4. ERROR, blinks once when an error message is publishes to `/rosout`
+
+this node can be run by
 
 ```shell=
-roslaunch nturt_ros_deploy_to_rpi ros_test.py
+rosrun nturt_ros_deploy_to_rpi nturt_led_controller_node
 ```
 
-It also contains some testing C++ executables in `test/` that will not be further documented here.
+#### ros_test.py
+
+This ros package also provides testing python scripts `ros_test.py` in `scripts/ros_test.py` that blinks a led on gpio 38 which can be useful to find out weather the ros is launched. You can run it by
+
+```shell=
+rosrun nturt_ros_deploy_to_rpi ros_test.py
+```
+
+It also contains some testing C++ executables in `test` that will not be further documented here.
 
 ## What will be done when deploying
 

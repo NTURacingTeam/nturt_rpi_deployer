@@ -40,7 +40,7 @@ target_link_libraries(nturt_led_controller_node
 )
 
 #tests
-# executables: can_test
+# executable: can_test
 add_executable(can_test
         test/can_test.cpp
 )
@@ -48,7 +48,7 @@ target_link_libraries(can_test
         ${catkin_LIBRARIES}
 )
 
-# executables: can_test
+# executable: can_test
 add_executable(stm32_test
         test/stm32_test.cpp
 )
@@ -56,7 +56,7 @@ target_link_libraries(stm32_test
         ${catkin_LIBRARIES}
 )
 
-# executables: can_test
+# executable: can_test
 add_executable(cmd_test
         test/cmd_test
 )
@@ -65,6 +65,7 @@ target_link_libraries(cmd_test
 )
 
 # python scripts
+# executable: ros_test.py
 catkin_install_python(PROGRAMS
         scripts/ros_test.py
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

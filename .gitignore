@@ -1,3 +1,4 @@
 .vscode
+doxygen
 nturt_ros_pipe
 scripts/get_docker.sh
