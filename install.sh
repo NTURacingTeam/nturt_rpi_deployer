@@ -1,12 +1,13 @@
 #!/bin/bash
 
 # if wiringpi is not installed
-dpkg -s wiringpi &>/dev/null
+gpio readall &>/dev/null
 if [[ ! $? == 0 ]]; then
     echo "Wiringpi is not installed, installing..."
-    wget https://project-downloads.drogon.net/wiringpi-latest.deb
-    sudo dpkg -i wiringpi-latest.deb
-    rm wiringpi-latest.deb
+    git clone https://github.com/WiringPi/WiringPi.git
+    cd WiringPi
+    sudo ./build
+    cd .. && sudo rm -rf WiringPi
 fi
 
 # if bcm2835 is not installed
@@ -46,4 +47,4 @@ if [[ -z "$(which docker)" ]]; then
     sudo su - ${USER}
 fi
 
-echo "Installation of depency finished"
+echo "Installation of depencies finished"
