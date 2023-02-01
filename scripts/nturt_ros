@@ -31,9 +31,9 @@ start() {
     ifconfig can0 up
 
     # launch ros in docker
-    docker exec -d ros bash -c "source /opt/ros/noetic/setup.bash
-                                source \${HOME}/ws/devel/setup.bash
-                                roslaunch nturt_rpi_deployer nturt_ros.launch"
+    docker exec -d ros bash -c "source /opt/ros/humble/setup.bash
+                                source \${HOME}/ws/install/setup.bash
+                                ros2 launch nturt_rpi_deployer nturt_ros.launch.py"
     date +"! %Y/%m/%d %a %T : Finished launching ros on docker." >>/var/log/nturt_ros
 
     # start executing loop for executing host command in docker container

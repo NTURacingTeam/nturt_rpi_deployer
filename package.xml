@@ -1,26 +1,29 @@
 <?xml version="1.0"?>
-<package format="2">
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
     <name>nturt_rpi_deployer</name>
     <version>0.0.0</version>
-    <description>ROS package for deploying ros to raspberry pi.</description>
-    <maintainer email="jet22854111@gmail.com">quantumspawner</maintainer>
-    <author email="jet22854111@gmail.com">quantumspawner</author>
+    <description>ROS2 package for deploying ros2 to raspberry pi.</description>
+    <maintainer email="jet22854111@gmail.com">QuantumSpawner</maintainer>
+    <author email="jet22854111@gmail.com">QuantumSpawner</author>
     <license>TODO</license>
 
     <!-- build dependencies -->
-    <buildtool_depend>catkin</buildtool_depend>
-    <build_depend>can_msgs</build_depend>
-    <build_depend>roscpp</build_depend>
-    <build_depend>rospy</build_depend>
-    <build_depend>std_msgs</build_depend>
-    <build_export_depend>can_msgs</build_export_depend>
-    <build_export_depend>roscpp</build_export_depend>
-    <build_export_depend>rospy</build_export_depend>
-    <build_export_depend>std_msgs</build_export_depend>
-    
-    <!-- execute dependencies -->
-    <exec_depend>can_msgs</exec_depend>
-    <exec_depend>roscpp</exec_depend>
-    <exec_depend>rospy</exec_depend>
-    <exec_depend>std_msgs</exec_depend>
+    <buildtool_depend>ament_cmake</buildtool_depend>
+
+    <!-- execute dependencise -->
+    <exec_depend>nturt_bag_recorder</exec_depend>
+    <exec_depend>nturt_can_parser</exec_depend>
+    <exec_depend>nturt_gps</exec_depend>
+    <exec_depend>nturt_push_to_control_tower</exec_depend>
+    <exec_depend>ros2_socketcan</exec_depend>
+    <exec_depend>ros2launch</exec_depend>
+
+    <!-- test dependencies -->
+    <test_depend>ament_lint_auto</test_depend>
+    <test_depend>ament_lint_common</test_depend>
+
+    <export>
+        <build_type>ament_cmake</build_type>
+    </export>
 </package>

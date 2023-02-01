@@ -1,72 +1,29 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.8)
 project(nturt_rpi_deployer)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_CXX_STANDARD 17)
 
-find_package(catkin REQUIRED
-        can_msgs
-        roscpp
-        rospy
-        std_msgs
-)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
-catkin_package(
-        INCLUDE_DIRS
-        LIBRARIES
-        CATKIN_DEPENDS can_msgs roscpp rospy std_msgs
-)
+find_package(ament_cmake REQUIRED)
 
-include_directories(
-        include
-        ${catkin_INCLUDE_DIRS}
+# install launch scripts
+install(DIRECTORY launch
+        DESTINATION share/${PROJECT_NAME}
 )
 
-# libraries
-# library: nturt_led_controller
-add_library(nturt_led_controller
-        src/nturt_led_controller.cpp
-)
-target_link_libraries(nturt_led_controller
-        ${catkin_LIBRARIES}
-        wiringPi
-)
+if(BUILD_TESTING)
+        find_package(ament_lint_auto REQUIRED)
+        # the following line skips the linter which checks for copyrights
+        # comment the line when a copyright and license is added to all source files
+        set(ament_cmake_copyright_FOUND TRUE)
+        # the following line skips cpplint (only works in a git repo)
+        # comment the line when this package is in a git repo and when
+        # a copyright and license is added to all source files
+        set(ament_cmake_cpplint_FOUND TRUE)
+        ament_lint_auto_find_test_dependencies()
+endif()
 
-# applications
-# executable: nturt_led_controller_node
-add_executable(nturt_led_controller_node
-        app/nturt_led_controller_node.cpp
-)
-target_link_libraries(nturt_led_controller_node
-        nturt_led_controller
-)
-
-#tests
-# executable: can_test
-add_executable(can_test
-        test/can_test.cpp
-)
-target_link_libraries(can_test
-        ${catkin_LIBRARIES}
-)
-
-# executable: can_test
-add_executable(stm32_test
-        test/stm32_test.cpp
-)
-target_link_libraries(stm32_test
-        ${catkin_LIBRARIES}
-)
-
-# executable: can_test
-add_executable(cmd_test
-        test/cmd_test
-)
-target_link_libraries(cmd_test
-        ${catkin_LIBRARIES}
-)
-
-# python scripts
-# executable: ros_test.py
-catkin_install_python(PROGRAMS
-        scripts/ros_test.py
-        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+ament_package()
