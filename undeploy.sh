@@ -1,11 +1,20 @@
 #!/bin/bash
 
-set -e
-
 # declare text styles
-COLOR_REST='\033[0m'
-HIGHLIGHT='\033[0;1m'
-COLOR_RED='\033[1;31m'
+COLOR_REST='\e[0m'
+HIGHLIGHT='\e[0;1m'
+REVERSE='\e[0;7m'
+COLOR_RED='\e[1;31m'
+COLOR_YELLOW='\e[1;93m'
+
+print_usage() {
+    echo "Undeploy NTURT ROS2 control system"
+    echo "Note: This script needs to run with root permission"
+    echo ""
+    echo "Usage: sudo ./undeploy.sh [OPTIONS]"
+    echo "Options:"
+    echo "    -h --help       Print this help message and exit"
+}
 
 # check for root permission
 if ! [ $(id -u) = 0 ]; then
