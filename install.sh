@@ -108,7 +108,7 @@ if [[ -z "$(which docker)" ]]; then
     rm get_docker.sh
 
     # add the user to docker group
-    usermod -aG docker ${USER}
+    usermod -aG docker ${REAL_USER}
     
     NEED_TO_REBOOT=true
 fi
