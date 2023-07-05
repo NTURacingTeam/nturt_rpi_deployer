@@ -99,6 +99,15 @@ if [ "${CONFIGURE_REALTIME}" = true ]; then
     fi
 fi
 
+# if swap size has not enlarged
+if [ $(cat /etc/dphys-swapfile | grep CONF_SWAPSIZE= | cut -d= -f2) != 1024]; then
+    echo "Enlarge swap size to 1024 MB"
+    dphys-swapfile swapoff
+    sed -i "/CONF_SWAPSIZE/c\CONF_SWAPSIZE=1024" /etc/dphys-swapfile
+    dphys-swapfile setup
+    dphys-swapfile swapon
+fi
+
 # if docker is not installed
 if [[ -z "$(which docker)" ]]; then
     echo "Docker is not installed, installing..."

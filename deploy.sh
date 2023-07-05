@@ -86,20 +86,30 @@ if [ "${SKIP_CHECK}" = false ]; then
     # check real-time configuration
     if [ "${CONFIGURE_REALTIME}" = true ]; then
         # real-time priority
-        elif [[ -z "$(cat /etc/security/limits.conf | grep -e ${REAL_USER}.*rtprio)" ]]; then
+        if [[ -z "$(cat /etc/security/limits.conf | grep -e ${REAL_USER}.*rtprio)" ]]; then
             echo -en "${COLOR_RED}Error: ${HIGHLIGHT}Permission for real-time priority not set, " >&2
-            echo -e "please install it by executing \"install.sh\" script first.${COLOR_REST}" >&2
+            echo -e "please configure it by executing \"install.sh\" script first.${COLOR_REST}" >&2
+            exit 1
         fi
         # memlock priority
-        elif [[ -z "$(cat /etc/security/limits.conf | grep -e ${REAL_USER}.*rtprio)" ]]; then
+        if [[ -z "$(cat /etc/security/limits.conf | grep -e ${REAL_USER}.*rtprio)" ]]; then
             echo -en "${COLOR_RED}Error: ${HIGHLIGHT}Permission for memlock not set, " >&2
-            echo -e "please install it by executing \"install.sh\" script first.${COLOR_REST}" >&2
+            echo -e "please configure it by executing \"install.sh\" script first.${COLOR_REST}" >&2
+            exit 1
         fi
+    fi
+
+    # check for swap size
+    if [ $(cat /etc/dphys-swapfile | grep CONF_SWAPSIZE= | cut -d= -f2) != 1024 ]; then
+        echo -en "${COLOR_RED}Error: ${HIGHLIGHT}Swap size has not been en larged, " >&2
+        echo -e "please configure it by executing \"install.sh\" script first.${COLOR_REST}" >&2
+        exit 1
     fi
 
     # check docker
     if [[ -z "$(which docker)" ]]; then
-        echo "Docker is not installed, please install it by executing 'install.sh' script first"
+        echo -en "${COLOR_RED}Error: ${HIGHLIGHT}Docker is not installed, " >&2
+        echo -e "please install it by executing \"install.sh\" script first.${COLOR_REST}" >&2
         exit 1
     fi
 

@@ -1,5 +1,5 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
@@ -12,7 +12,7 @@ def generate_launch_description():
     arguments.append(
         DeclareLaunchArgument(
             "is_realtime",
-            default_value="true",
+            default_value="false",
             description="Whether to run using real-time scheduler.",
         )
     )
@@ -47,14 +47,14 @@ def generate_launch_description():
     arguments.append(
         DeclareLaunchArgument(
             "control_tower_ip",
-            default_value="124.218.222.22",
+            default_value="140.112.14.14",
             description="The ip of the control tower.",
         )
     )
     arguments.append(
         DeclareLaunchArgument(
             "control_tower_port",
-            default_value="8080",
+            default_value="'21543'",
             description="The port of the control tower.",
         )
     )
@@ -68,6 +68,12 @@ def generate_launch_description():
     control_tower_ip = LaunchConfiguration("control_tower_ip")
     control_tower_port = LaunchConfiguration("control_tower_port")
 
+    #envirnoment variable
+    environment_variables = []
+    environment_variables.append(
+        SetEnvironmentVariable(name="DISPLAY", value=":0")
+    )
+
     # declare include files
     # node for transceiving can signal
     socket_can_bridge = IncludeLaunchDescription(
@@ -77,11 +83,11 @@ def generate_launch_description():
                 "socket_can_bridge.launch.py",
             ]),
         ]),
-        launch_arguments=[{
+        launch_arguments={
             "is_realtime": is_realtime,
             "password": password,
             "bitrate": can_bitrate,
-        }],
+        }.items(),
     )
     # node for sneding messages to remote server
     push_to_control_tower = IncludeLaunchDescription(
@@ -91,10 +97,10 @@ def generate_launch_description():
                 "nturt_push_to_control_tower.launch.py",
             ]),
         ]),
-        launch_arguments=[{
+        launch_arguments={
             "ip": control_tower_ip,
             "port": control_tower_port,
-        }],
+        }.items(),
     )
 
     includes = [
@@ -116,7 +122,7 @@ def generate_launch_description():
         output="both",
         parameters=[{
             "port": gps_port,
-            "baud": gps_baudrate
+            "baud": gps_baudrate,
         }]
     )
     # node for controlling led
@@ -125,10 +131,16 @@ def generate_launch_description():
         executable="nturt_led_controller_node",
         output="both",
     )
-    #node for monitoring system stats
-    system_stats_monitor = Node(
+    # node for displaying screen
+    screen_controller_node = Node(
+        package="nturt_screen_controller",
+        executable="nturt_screen_controller_node",
+        output="both",
+    )
+    # node for monitoring system stats
+    system_stats_monitor_node = Node(
         package="nturt_rpi_deployer",
-        executable="system_stats_monitor",
+        executable="system_stats_monitor_node",
         output="both",
     )
 
@@ -136,7 +148,8 @@ def generate_launch_description():
         bag_recorder_node,
         gps_node,
         led_controller_node,
-        system_stats_monitor,
+        screen_controller_node,
+        system_stats_monitor_node,
     ]
 
-    return LaunchDescription(arguments + includes + nodes)
+    return LaunchDescription(arguments + environment_variables + includes + nodes)
