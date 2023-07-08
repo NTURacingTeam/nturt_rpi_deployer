@@ -14,6 +14,9 @@
 // ros2 include
 #include <rclcpp/rclcpp.hpp>
 
+// wifi-scan include
+#include "wifi_scan.h"
+
 // nturt include
 #include "nturt_ros_interface/msg/system_stats.hpp"
 #include "nturt_rpi_deployer/system_stats.hpp"
@@ -22,6 +25,9 @@ class SystemStatsMonitor : public rclcpp::Node {
  public:
   /// @brief Constructor of SystemStatsMonitor.
   SystemStatsMonitor(rclcpp::NodeOptions options);
+
+  /// @brief Destructor of SystemStatsMonitor.
+  ~SystemStatsMonitor();
 
  private:
   /// @brief Timed callback function for updating system stats.
@@ -42,6 +48,12 @@ class SystemStatsMonitor : public rclcpp::Node {
 
   /// @brief Class for monitoring memory stats.
   MemoryStats memory_stats_;
+
+  /// @brief Struct for storing wifi-scan library info.
+  struct wifi_scan* wifi_;
+
+  /// @brief Struct for storing wifi station info.
+  struct station_info station_;
 };
 
 #endif  // SYSTEM_STATS_MONITOR_HPP

@@ -7,6 +7,9 @@
 // ros2 include
 #include <rclcpp/rclcpp.hpp>
 
+// wifi-scan include
+#include "wifi_scan.h"
+
 // nturt include
 #include "nturt_ros_interface/msg/system_stats.hpp"
 #include "nturt_rpi_deployer/system_stats.hpp"
@@ -23,7 +26,15 @@ SystemStatsMonitor::SystemStatsMonitor(rclcpp::NodeOptions options)
               "/system_stats", 10)) {
   // init cpu stats
   cpu_stats_.update();
+
+// init wifi-scan
+#if defined(__aarch64__) && !defined(__APPLE__)
+  wifi_ = wifi_scan_init("wlan0");
+#endif
+  wifi_ = wifi_scan_init("wlp3s0");
 }
+
+SystemStatsMonitor::~SystemStatsMonitor() { wifi_scan_close(wifi_); }
 
 void SystemStatsMonitor::update_system_stats_timer_callback() {
   CpuStats cpu_stats;
@@ -40,4 +51,14 @@ void SystemStatsMonitor::update_system_stats_timer_callback() {
   system_stats_.cpu_temperature = get_thermalzone_temperature(0);
 
   system_stats_pub_->publish(system_stats_);
+
+  int status = wifi_scan_station(wifi_, &station_);
+
+  if (status > 0) {
+    system_stats_.wifi_ssid = station_.ssid;
+    system_stats_.wifi_strength = station_.signal_dbm;
+  } else {
+    system_stats_.wifi_ssid = "";
+    system_stats_.wifi_strength = 0;
+  }
 }

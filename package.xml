@@ -11,6 +11,12 @@
     <!-- build dependencies -->
     <buildtool_depend>ament_cmake</buildtool_depend>
 
+    <!-- general dependencies -->
+    <depend>libmnl-dev</depend>
+    <depend>nturt_ros_interface</depend>
+    <depend>rclcpp</depend>
+    <depend>rclcpp_components</depend>
+
     <!-- execute dependencise -->
     <exec_depend>nturt_bag_recorder</exec_depend>
     <exec_depend>nturt_can_config</exec_depend>
@@ -18,7 +24,6 @@
     <exec_depend>nturt_led_controller</exec_depend>
     <exec_depend>nturt_push_to_control_tower</exec_depend>
     <exec_depend>nturt_realtime_utils</exec_depend>
-    <exec_depend>nturt_ros_interface</exec_depend>
     <exec_depend>nturt_screen_controller</exec_depend>
     <exec_depend>ros2_socketcan</exec_depend>
 

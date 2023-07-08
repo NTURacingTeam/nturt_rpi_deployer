@@ -12,6 +12,9 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(nturt_ros_interface REQUIRED)
 
+# configure wifi-scan
+include(cmake/wifi-scan.cmake)
+
 include_directories(
         include
 )
@@ -23,7 +26,7 @@ add_library(system_stats_monitor SHARED
         src/system_stats_monitor.cpp
 )
 target_link_libraries(system_stats_monitor
-        ${Boost_LIBRARIES}
+        wifi-scan
 )
 ament_target_dependencies(system_stats_monitor
         rclcpp

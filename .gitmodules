@@ -1,0 +1,3 @@
+[submodule "wifi-scan"]
+	path = wifi-scan
+	url = https://github.com/bmegli/wifi-scan.git
