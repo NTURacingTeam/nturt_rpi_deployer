@@ -30,8 +30,9 @@ SystemStatsMonitor::SystemStatsMonitor(rclcpp::NodeOptions options)
 // init wifi-scan
 #if defined(__aarch64__) && !defined(__APPLE__)
   wifi_ = wifi_scan_init("wlan0");
-#endif
+#else
   wifi_ = wifi_scan_init("wlp3s0");
+#endif
 }
 
 SystemStatsMonitor::~SystemStatsMonitor() { wifi_scan_close(wifi_); }
