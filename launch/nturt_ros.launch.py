@@ -112,7 +112,7 @@ def generate_launch_description():
     # node for recording ros bag
     bag_recorder_node = Node(
         package="nturt_bag_recorder",
-        executable="nturt_bag_recorder_node",
+        executable="nturt_bag_recorder_node.py",
         output="both",
     )
     # node for receiving gps signal 
