@@ -2,9 +2,9 @@
 
 ## Introduction
 
-It is alright to test ros on desktop computers, but in order to set it up on the race car, or specifically raspberry pi, we need to setup a lot of things. This ros package `nturt_rpi_deployer` provides some useful scripts that automate the setup process and make rpi launch ros at start up.
+It is alright to test ROS on desktop computers, but in order to set it up on the race car, or specifically raspberry pi, we need to setup a lot of things. This ROS package `nturt_rpi_deployer` provides some useful scripts that automate the setup process and make rpi launch ROS at start up.
 
-Since ros aren't natively support on Raspian, so we utillize a docker virtual environment to contain ros in a container.
+Since ROS aren't natively support on Raspberry Pi OS, we utillize a docker virtual environment to contain ROS in a docker container.
 
 ## Usage
 
@@ -15,61 +15,44 @@ Since ros aren't natively support on Raspian, so we utillize a docker virtual en
 On raspberry pi, run
 
 ```shell=
-./install.sh
+sudo ./install.sh [OPTIONS]
 ```
 
-first to install needed libraries.
+first to install needed dependencies.
 
 #### Deploy
 
 After that, run
 
 ```shell=
-./deploy.sh
+sudo ./deploy.sh [OPTIONS]
 ```
 
-to deploy it.
+to deploy ROS on raspberry pi and run it at startup.
 
 #### Undeploy
 
 If you want to undeploy, run
 
 ```shell=
-./undeploy.sh
+sudo ./undeploy.sh [OPTIONS]
 ```
 
 to revert the changes done when deploying.
 
-### ROS setup
+> Note: For more inofrmation about the usage of the scripts, use `-h` option to see the help message.
 
-#### nturt_ros.launch
+### system_stats_monitort_node
 
-ROS will be launched at start up using launch file in `launch/nturt_ros.launch`, so custom it to fit your need.
+This package also provides utilities to monitor the usage of cpu, memory, swap and disk, as well as the temperature of cpu, the ssid of the connected wifi and its strength using ros message nturt_ros_interface/SystemStats every second.
 
-#### nturt_led_controller_node
-
-This ros package provides `nturt_led_controller_node` that controlls the leds attaches to rpi to indicates:
-
-1. ROS, blinks on and off as long as this node is running
-2. CAN, blinks once when receiving a can message
-3. WARN, blinks once when a warnning message is publishes to `/rosout`
-4. ERROR, blinks once when an error message is publishes to `/rosout`
-
-this node can be run by
+Usage
 
 ```shell=
-rosrun nturt_ros_deploy_to_rpi nturt_led_controller_node
+ros2 run nturt_rpi_deployer system_stats_monitort_node
 ```
 
-#### ros_test.py
-
-This ros package also provides testing python scripts `ros_test.py` in `scripts/ros_test.py` that blinks a led on gpio 38 which can be useful to find out weather the ros is launched. You can run it by
-
-```shell=
-rosrun nturt_ros_deploy_to_rpi ros_test.py
-```
-
-It also contains some testing C++ executables in `test` that will not be further documented here.
+> Note: Since only the wifi interface of rpi, `wlan0`, is known when writting the code, this node may not run at other platforms if the wifi interface is not `wlan0`.
 
 ## What will be done when deploying
 
@@ -77,20 +60,24 @@ It also contains some testing C++ executables in `test` that will not be further
 
 First, when installing, the follow will be install:
 
-1. wiringpi
+1. WiringPi
 2. bcm2835
-3. /boot/configure.txt will be modified for can hat
-4. docker
+3. docker
+
+And the following changes will be made to the system:
+
+1. /boot/configure.txt will be modified for can hat
+2. Swap size will be increased to 1GB
+3. Real-time permission will be configured if `-r` option is specified
 
 ### Deploy
 
-Second, when deploying, the following changes will be made to deploy ros on rpi:
+Second, when deploying, installation will be checked first.
+After that, the following changes will be made to deploy ros on raspberry pi:
 
 1. Make a named pipe `nturt_ros_pipe`
 2. Check if the service `nturt_ros` exist in `/etc/init.d/`, if not, copy the startup script in `scripts/nturt_ros` to `/etc/init.d/` and configure it to run at startup
 3. Check if the startup script in script/nturt_ros is modified, if so, copy it to `/etc/init.d/nturt_ros` and reload `systemctl daemon` to make the changes into effect
-4. Build docker image `ros_rpi` from [NTURacingTeam/docker](https://github.com/NTURacingTeam/docker) and create a container named `ros` based on that image if no container names `ros` exist
-5. move the content of this package into `ros` container's source directory
 
 ### Undeploy
 
@@ -104,7 +91,7 @@ When undeploying, the followign changes will be made:
 `nturt_ros` is copied to `/etc/init.d/` such that it is deemed as a service hence it can be controlled as
 
 ```shell=
-sudo service nturt_ros COMMAND
+sudo service nturt_ros \<COMMAND\>
 ```
 
 whrere COMMAND can be `start`, `stop` or `restart`.
@@ -113,16 +100,18 @@ whrere COMMAND can be `start`, `stop` or `restart`.
 
 When starting the service, it
 
-1. runs docker container `ros` if it is not running
-2. configures and activates can hat.
-3. launches ros using launch file in `launch/`.
-4. runs `execute_loop.sh` in `scripts/` that listenes to names pipe `nturt_ros_pipe` and executes text passed to it as shell commands.
+1. runs docker container `ros2` if it is not running
+2. launches ros using command
+    ```shell=
+    ros2 launch nturt_rpi_deployer nturt_ros.launch.py
+    ```
+3. runs `scripts/execute_loop.sh` that listenes to names pipe `nturt_ros_pipe` and executes text passed to it as shell commands.
 
-### start
+### stop
 
 When stoping the service, it
 
-1. kill ros
+1. stop `ros2` docker container
 2. stop `execute_loop.sh` by passing `stop`.
 
 ### restart
