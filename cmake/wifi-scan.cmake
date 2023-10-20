@@ -6,3 +6,5 @@ add_library(wifi-scan SHARED
 target_link_libraries(wifi-scan
         mnl
 )
+
+target_compile_options(wifi-scan PRIVATE -w)
