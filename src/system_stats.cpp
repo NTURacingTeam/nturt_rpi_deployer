@@ -1,12 +1,17 @@
 #include "nturt_rpi_deployer/system_stats.hpp"
 
 // glibc include
+#include <stdio.h>
 #include <sys/statvfs.h>
 
 // stl include
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <regex>
+
+// boost include
+#include <boost/process.hpp>
 
 void CpuStats::update() {
   std::ifstream proc_stat("/proc/stat");
@@ -109,4 +114,31 @@ double get_thermalzone_temperature(int thermal_index) {
   thermal_file.close();
 
   return result / 1000.0;
+}
+
+double get_ping_latency(const std::string& host) {
+  using namespace boost::process;
+
+  std::string cmd = "ping -c 3 -W " + host;
+
+  ipstream is;
+  child c(cmd, std_out > is);
+  c.wait();
+
+  if (c.exit_code() != 0) {
+    return -1;
+  }
+
+  std::string line, output;
+  while (std::getline(is, line)) {
+    output += line + '\n';
+  }
+
+  std::regex re("[\\d.]+/([\\d.]+)/[\\d.]+/[\\d.]+");
+  std::smatch match;
+  if(!std::regex_search(output, match, re)) {
+    return -2;
+  }
+
+  return std::stod(match[1]);
 }

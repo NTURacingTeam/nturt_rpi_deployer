@@ -10,6 +10,7 @@
 
 // std include
 #include <memory>
+#include <future>
 
 // ros2 include
 #include <rclcpp/rclcpp.hpp>
@@ -33,8 +34,14 @@ class SystemStatsMonitor : public rclcpp::Node {
   /// @brief Timed callback function for updating system stats.
   void update_system_stats_timer_callback();
 
+  /// @brief Timed callback function for updating ping.
+  void update_ping_timer_callback();
+
   /// @brief ROS2 timer for updating system stats.
   rclcpp::TimerBase::SharedPtr update_system_stats_timer_;
+
+  /// @brief ROS2 timer for updating ping.
+  rclcpp::TimerBase::SharedPtr update_ping_timer_;
 
   /// @brief ROS2 publisher to "/system_stats", for publishing system stats.
   rclcpp::Publisher<nturt_ros_interface::msg::SystemStats>::SharedPtr
@@ -54,6 +61,9 @@ class SystemStatsMonitor : public rclcpp::Node {
 
   /// @brief Struct for storing wifi station info.
   struct station_info station_;
+
+  /// @brief Future for storing ping result.
+  std::future<double> ping_future_;
 };
 
 #endif  // SYSTEM_STATS_MONITOR_HPP
