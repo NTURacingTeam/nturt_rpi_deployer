@@ -119,7 +119,7 @@ double get_thermalzone_temperature(int thermal_index) {
 double get_ping_latency(const std::string& host) {
   using namespace boost::process;
 
-  std::string cmd = "ping -c 3 -W " + host;
+  std::string cmd = "ping -c 3 -W 1 " + host;
 
   ipstream is;
   child c(cmd, std_out > is);
