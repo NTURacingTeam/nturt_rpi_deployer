@@ -33,14 +33,14 @@ def generate_launch_description():
     arguments.append(
         DeclareLaunchArgument(
             "gps_port",
-            default_value="/dev/ttyACM0",
+            default_value="/dev/ttyUSB0",
             description="The port of the gps receiver.",
         )
     )
     arguments.append(
         DeclareLaunchArgument(
             "gps_baudrate",
-            default_value="9600",
+            default_value="115200",
             description="The baudrate of the gps receiver.",
         )
     )
@@ -117,8 +117,8 @@ def generate_launch_description():
     )
     # node for receiving gps signal 
     gps_node = Node(
-        package="nmea_navsat_driver",
-        executable="nmea_serial_driver",
+        package="nturt_nmea_navsat_driver",
+        executable="nmea_ntrip_driver",
         output="both",
         parameters=[{
             "port": gps_port,
