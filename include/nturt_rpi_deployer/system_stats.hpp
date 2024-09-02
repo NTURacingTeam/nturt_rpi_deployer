@@ -108,4 +108,22 @@ double get_disk_usage(const std::string &disk);
  */
 double get_thermalzone_temperature(int thermal_index);
 
+/**
+ * @brief Function for getting ping latency in [ms].
+ *
+ * Uses system ping command to ping the host by `ping -c 3 -W 1 <host>`.
+ * Assumes the ping command to return
+ * `rtt min/avg/max/mdev = 0.000/0.000/0.000/0.000 ms`
+ * to get the average ping latency.
+ *
+ * Reference:
+ * - (boost
+ * process)[https://www.boost.org/doc/libs/1_82_0/doc/html/boost_process/tutorial.html]
+ * - (C++ regex syntex)[https://cplusplus.com/reference/regex/ECMAScript/]
+ * @param host The host to ping.
+ * @return double Ping latency. -1 if ping failed. -2 if pattern unmatched.
+ * @note This function is blocking.
+ */
+double get_ping_latency(const std::string &host);
+
 #endif  // SYSTEM_STATS_HPP

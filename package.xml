@@ -12,12 +12,14 @@
     <buildtool_depend>ament_cmake</buildtool_depend>
 
     <!-- general dependencies -->
+    <depend>boost</depend>
     <depend>libmnl-dev</depend>
     <depend>nturt_ros_interface</depend>
     <depend>rclcpp</depend>
     <depend>rclcpp_components</depend>
 
     <!-- execute dependencise -->
+    <exec_depend>iputils-ping</exec_depend>
     <exec_depend>nturt_bag_recorder</exec_depend>
     <exec_depend>nturt_can_config</exec_depend>
     <exec_depend>nturt_can_parser</exec_depend>

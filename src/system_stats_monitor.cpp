@@ -2,6 +2,7 @@
 
 // std include
 #include <functional>
+#include <future>
 #include <memory>
 
 // ros2 include
@@ -21,6 +22,9 @@ SystemStatsMonitor::SystemStatsMonitor(rclcpp::NodeOptions options)
       update_system_stats_timer_(this->create_wall_timer(
           1s, std::bind(&SystemStatsMonitor::update_system_stats_timer_callback,
                         this))),
+      update_ping_timer_(this->create_wall_timer(
+          10s,
+          std::bind(&SystemStatsMonitor::update_ping_timer_callback, this))),
       system_stats_pub_(
           this->create_publisher<nturt_ros_interface::msg::SystemStats>(
               "/system_stats", 10)) {
@@ -62,4 +66,19 @@ void SystemStatsMonitor::update_system_stats_timer_callback() {
     system_stats_.wifi_ssid = "";
     system_stats_.wifi_strength = 0;
   }
+}
+
+void SystemStatsMonitor::update_ping_timer_callback() {
+  if (ping_future_.valid()) {
+    double ret = ping_future_.get();
+    if(ret < 0) {
+      system_stats_.ping = 0;
+    } else {
+      system_stats_.ping = ret;
+    }
+  } else {
+    system_stats_.ping = 0;
+  }
+
+  ping_future_ = std::async(get_ping_latency, "1.1.1.1");
 }
