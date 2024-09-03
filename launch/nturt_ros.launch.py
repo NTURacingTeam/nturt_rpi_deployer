@@ -1,5 +1,5 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
@@ -26,7 +26,7 @@ def generate_launch_description():
     arguments.append(
         DeclareLaunchArgument(
             "can_bitrate",
-            default_value="250000",
+            default_value="500000",
             description="The bitrate of the can.",
         )
     )
@@ -44,20 +44,6 @@ def generate_launch_description():
             description="The baudrate of the gps receiver.",
         )
     )
-    arguments.append(
-        DeclareLaunchArgument(
-            "control_tower_ip",
-            default_value="140.112.14.14",
-            description="The ip of the control tower.",
-        )
-    )
-    arguments.append(
-        DeclareLaunchArgument(
-            "control_tower_port",
-            default_value="'21543'",
-            description="The port of the control tower.",
-        )
-    )
 
     # initialize arguments
     is_realtime = LaunchConfiguration("is_realtime")
@@ -65,14 +51,6 @@ def generate_launch_description():
     can_bitrate = LaunchConfiguration("can_bitrate")
     gps_port = LaunchConfiguration("gps_port")
     gps_baudrate = LaunchConfiguration("gps_baudrate")
-    control_tower_ip = LaunchConfiguration("control_tower_ip")
-    control_tower_port = LaunchConfiguration("control_tower_port")
-
-    #envirnoment variable
-    environment_variables = []
-    environment_variables.append(
-        SetEnvironmentVariable(name="DISPLAY", value=":0")
-    )
 
     # declare include files
     # node for transceiving can signal
@@ -89,23 +67,9 @@ def generate_launch_description():
             "bitrate": can_bitrate,
         }.items(),
     )
-    # node for sneding messages to remote server
-    push_to_control_tower = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([
-                FindPackageShare("nturt_push_to_control_tower"),
-                "nturt_push_to_control_tower.launch.py",
-            ]),
-        ]),
-        launch_arguments={
-            "ip": control_tower_ip,
-            "port": control_tower_port,
-        }.items(),
-    )
 
     includes = [
         socket_can_bridge,
-        push_to_control_tower,
     ]
 
     # declare nodes
@@ -125,18 +89,6 @@ def generate_launch_description():
             "baud": gps_baudrate,
         }]
     )
-    # node for controlling led
-    led_controller_node = Node(
-        package="nturt_led_controller",
-        executable="nturt_led_controller_node",
-        output="both",
-    )
-    # node for displaying screen
-    screen_controller_node = Node(
-        package="nturt_screen_controller",
-        executable="nturt_screen_controller_node",
-        output="both",
-    )
     # node for monitoring system stats
     system_stats_monitor_node = Node(
         package="nturt_rpi_deployer",
@@ -147,9 +99,7 @@ def generate_launch_description():
     nodes = [
         bag_recorder_node,
         gps_node,
-        led_controller_node,
-        screen_controller_node,
         system_stats_monitor_node,
     ]
 
-    return LaunchDescription(arguments + environment_variables + includes + nodes)
+    return LaunchDescription(arguments + includes + nodes)
